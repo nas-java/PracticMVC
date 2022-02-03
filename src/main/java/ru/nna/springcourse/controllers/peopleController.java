@@ -2,10 +2,9 @@ package ru.nna.springcourse.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.nna.springcourse.DAO.personDAO;
+import ru.nna.springcourse.model.person;
 
 @Controller
 @RequestMapping("/people")
@@ -27,5 +26,17 @@ public class peopleController {
     public String show(@PathVariable ("id") int id, Model model){
         model.addAttribute("person",personDAO.show(id));
         return "people/show";
+    }
+
+    @GetMapping("/new")
+    public String newPeople(Model model){
+        model.addAttribute("person", new person());
+        return "people/new";
+    }
+
+    @PostMapping()
+    public String create(@ModelAttribute("person") person pers){
+        personDAO.save(pers);
+        return "redirect:/people";
     }
 }
