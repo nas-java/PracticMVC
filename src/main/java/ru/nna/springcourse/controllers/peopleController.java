@@ -1,10 +1,14 @@
 package ru.nna.springcourse.controllers;
 
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.nna.springcourse.DAO.personDAO;
 import ru.nna.springcourse.model.person;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/people")
@@ -35,7 +39,11 @@ public class peopleController {
     }
 
     @PostMapping()
-    public String create(@ModelAttribute("person") person pers){
+    public String create(@ModelAttribute("person") @Valid person pers, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "people/new";
+        }
+
         personDAO.save(pers);
         return "redirect:/people";
     }
@@ -47,7 +55,11 @@ public class peopleController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("person") person person, @PathVariable("id") int id) {
+    public String update(@ModelAttribute("person") @Valid person person,BindingResult bindingResult, @PathVariable("id") int id) {
+        if(bindingResult.hasErrors()){
+            return "people/edit";
+        }
+
         personDAO.update(id, person);
         return "redirect:/people";
     }
